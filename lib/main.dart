@@ -26,11 +26,15 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Personal Portfolio',
       darkTheme: ThemeData(
-        brightness: Brightness.light,
+        brightness: Brightness.dark,
         primarySwatch: Colors.blue,
-        textTheme: GoogleFonts.poppinsTextTheme(Theme.of(context).textTheme),
+        useMaterial3: true,
+        textTheme: GoogleFonts.interTextTheme().apply(
+          bodyColor: Colors.white,
+          displayColor: Colors.white,
+        ),
       ),
-      // themeMode: ThemeMode.dark,
+      themeMode: ThemeMode.dark,
       home: const ProfileScreen(),
     );
   }
