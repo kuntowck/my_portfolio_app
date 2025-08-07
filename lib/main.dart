@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'screens/portfolio_screen.dart';
+import 'widgets/custom_app_bar.dart';
+import 'widgets/custom_buttom_nav_bar.dart';
 
 void main() {
   runApp(const MyApp());
@@ -27,7 +30,7 @@ class MyApp extends StatelessWidget {
       title: 'Personal Portfolio',
       darkTheme: ThemeData(
         brightness: Brightness.dark,
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.indigo,
         useMaterial3: true,
         textTheme: GoogleFonts.interTextTheme().apply(
           bodyColor: Colors.white,
@@ -40,60 +43,72 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
+
+  @override
+  State<ProfileScreen> createState() => _ProfileScreenState();
+}
+class _ProfileScreenState extends State<ProfileScreen> {
+ int _currentIndex = 0;
+
+  void _changeTab(int index) {
+    setState(() => _currentIndex = index);
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              children: [
-                // Header Section
-                buildHeader(),
-                const SizedBox(height: 30),
-
-                // Profile Section
-                buildProfile(),
-                const SizedBox(height: 30),
-                const Divider(),
-                const SizedBox(height: 30),
-
-                // Contact Section
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    buildContact(Icons.email, email),
-                    buildContact(Icons.phone, phone),
-                    buildContact(Icons.location_on, address),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ),
+      appBar: CustomAppBar(title: 'Portfolio Kunto'),
+      body: MainContent(),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => PortfolioScreen()),
+          );
+        },
+        child: Icon(Icons.work),
       ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      bottomNavigationBar: CustomBottomNavBar(currentIndex: _currentIndex, onTap: _changeTab,),
     );
   }
 }
 
-class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
-  const CustomAppBar({super.key});
-
-  @override
-  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
+class MainContent extends StatelessWidget {
+  const MainContent({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return AppBar(
-      backgroundColor: Colors.black12,
-      title: Text(
-        'Portfolio Kunto',
-        style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF7B5FFF)),
+    return SafeArea(
+      child: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            children: [
+              // Header Section
+              buildHeader(),
+              const SizedBox(height: 20),
+
+              // Profile Section
+              buildProfile(),
+              const SizedBox(height: 20),
+              const Divider(),
+              const SizedBox(height: 20),
+
+              // Contact Section
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  buildContact(Icons.email, email),
+                  buildContact(Icons.phone, phone),
+                  buildContact(Icons.location_on, address),
+                ],
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -124,9 +139,9 @@ Widget buildProfile() {
           fit: BoxFit.cover,
         ),
       ),
-      const SizedBox(height: 30),
+      const SizedBox(height: 20),
       const Divider(),
-      const SizedBox(height: 30),
+      const SizedBox(height: 20),
 
       Column(
         crossAxisAlignment: CrossAxisAlignment.start,
