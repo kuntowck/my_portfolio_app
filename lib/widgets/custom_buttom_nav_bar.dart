@@ -20,7 +20,10 @@ class CustomBottomNavBar extends StatelessWidget {
       backgroundColor: Color(0xFF7B5FFF),
       items: const [
         BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
-  BottomNavigationBarItem(icon: Icon(Icons.contact_mail), label: 'Contact'),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.contact_mail),
+          label: 'Contact',
+        ),
       ],
     );
   }

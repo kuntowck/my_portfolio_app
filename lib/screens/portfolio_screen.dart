@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import '../widgets/custom_app_bar.dart';
-import '../widgets/custom_buttom_nav_bar.dart';
+import 'package:my_portfolio_app/widgets/custom_app_bar.dart';
 
 const String description =
     'Lorem ipsum dolor sit amet, consectetur adipiscing elit.';
@@ -9,50 +8,36 @@ const String project2 = "assets/img/project2.png";
 const String project3 = "assets/img/project3.png";
 const String project4 = "assets/img/project4.png";
 
-class PortfolioScreen extends StatefulWidget {
+class PortfolioScreen extends StatelessWidget {
   const PortfolioScreen({super.key});
-
-  @override
-  State<PortfolioScreen> createState() => _PortfolioScreenState();
-}
-
-class _PortfolioScreenState extends State<PortfolioScreen> {
-
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(title: 'Projects', showBack: true),
-      body: MainContent(),
-      // bottomNavigationBar: CustomBottomNavBar(
-      //   currentIndex: _currentIndex,
-      //   onTap: _changeTab,
-      // ),
-    );
-  }
-}
-
-class MainContent extends StatelessWidget {
-  const MainContent({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return SafeArea(
-      child: Padding(
-        padding: EdgeInsets.all(16),
-        child: ListView(
-          children: [
-            _card(1, 'HealthCare ', description, 'CodeIgniter4', project1),
-            _card(2, 'Sneakers Dominator ', description, 'Bootstrap', project3),
-            _card(3, 'Artho ', description, 'Figma', project4),
-            _card(
-              4,
-              'Animalia ',
-              description,
-              'HTML, CSS, JavaScript',
-              project2,
-            ),
-          ],
+      body: SafeArea(
+        child: Padding(
+          padding: EdgeInsets.all(16),
+          child: ListView(
+            children: [
+              _card(1, 'HealthCare ', description, 'CodeIgniter4', project1),
+              _card(
+                2,
+                'Sneakers Dominator ',
+                description,
+                'Bootstrap',
+                project3,
+              ),
+              _card(3, 'Artho ', description, 'Figma', project4),
+              _card(
+                4,
+                'Animalia ',
+                description,
+                'HTML, CSS, JavaScript',
+                project2,
+              ),
+            ],
+          ),
         ),
       ),
     );
