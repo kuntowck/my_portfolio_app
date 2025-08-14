@@ -122,11 +122,21 @@ Widget buildContact(icon, text) {
 Widget buttonEdit(context) {
   return IconButton(
     icon: Icon(Icons.edit, color: Colors.indigo),
-    onPressed: () {
-      Navigator.push(
+    onPressed: () async {
+      final result = await Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => EditProfileScreen()),
+        MaterialPageRoute(builder: (_) => EditProfileScreen()),
       );
+
+      if (result == true) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text("Profile updated successfully!"),
+            backgroundColor: Colors.deepPurple.shade100,
+            duration: Duration(seconds: 2),
+          ),
+        );
+      }
     }, // Tidak ada fungsi
     tooltip: 'Edit',
   );

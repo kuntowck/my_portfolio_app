@@ -43,7 +43,8 @@ class EditProfileScreen extends StatelessWidget {
             ElevatedButton(
               onPressed: () {
                 profileProvider.updateProfile();
-                Navigator.pop(context);
+
+                Navigator.pop(context, true);
               },
               child: const Text('Update Profile'),
             ),
