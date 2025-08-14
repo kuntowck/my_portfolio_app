@@ -1,32 +1,28 @@
 import 'package:flutter/material.dart';
+import 'package:my_portfolio_app/providers/profile_provider.dart';
+import 'package:my_portfolio_app/screens/edit_profile_screen.dart';
+import 'package:provider/provider.dart';
 
-class ProfileScreen extends StatelessWidget {
-  const ProfileScreen({super.key});
+const String pageTitle = "About Me";
 
-  @override
-  Widget build(BuildContext context) {
-    return MainContent();
-  }
-}
-
-const String name = "Kunto Wicaksono";
-const String profession = "Software Engineer";
+// const String name = "Kunto Wicaksono";
+// const String profession = "Software Engineer";
+// const String bio =
+//     'Halo! You can call me Kunto. I am a passionate software engineer with experience '
+//     'building mobile and web apps. I love clean code, coffee, and football.';
 const String profileImage = "assets/img/profile.jpg";
 
 const String email = "kunto@solecode.id";
 const String phone = "+62 812-3456-7890";
 const String address = "Jakarta, Indonesia";
 
-const String pageTitle = "About Me";
-const String bio =
-    'Halo! You can call me Kunto. I am a passionate software engineer with experience '
-    'building mobile and web apps. I love clean code, coffee, and football.';
-
-class MainContent extends StatelessWidget {
-  const MainContent({super.key});
+class ProfileScreen extends StatelessWidget {
+  const ProfileScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final profileProvider = context.watch<ProfileProvider>().profiles;
+
     return SafeArea(
       child: SingleChildScrollView(
         child: Padding(
@@ -38,7 +34,7 @@ class MainContent extends StatelessWidget {
               const SizedBox(height: 20),
 
               // Profile Section
-              buildProfile(),
+              buildProfile(context, profileProvider),
               const SizedBox(height: 20),
               const Divider(),
               const SizedBox(height: 20),
@@ -68,12 +64,11 @@ Widget buildHeader() {
         pageTitle,
         style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
       ),
-      buttonEdit(),
     ],
   );
 }
 
-Widget buildProfile() {
+Widget buildProfile(context, profileProvider) {
   return Column(
     children: [
       // Image
@@ -93,13 +88,18 @@ Widget buildProfile() {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Name, Profession, and Bio
-          Text(
-            name,
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          Row(
+            children: [
+              Text(
+                profileProvider.name,
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              buttonEdit(context),
+            ],
           ),
-          Text(profession),
-          SizedBox(height: 8),
-          Text(bio),
+          Text(profileProvider.profession),
+          const SizedBox(height: 8),
+          Text(profileProvider.bio),
         ],
       ),
     ],
@@ -119,10 +119,15 @@ Widget buildContact(icon, text) {
   );
 }
 
-Widget buttonEdit() {
+Widget buttonEdit(context) {
   return IconButton(
     icon: Icon(Icons.edit, color: Colors.indigo),
-    onPressed: () {}, // Tidak ada fungsi
+    onPressed: () {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => EditProfileScreen()),
+      );
+    }, // Tidak ada fungsi
     tooltip: 'Edit',
   );
 }

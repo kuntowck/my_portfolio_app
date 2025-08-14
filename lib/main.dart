@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:my_portfolio_app/providers/profile_provider.dart';
+import 'package:provider/provider.dart';
 import 'screens/portfolio_screen.dart';
 import 'screens/contact_screen.dart';
 import 'screens/profile_screen.dart';
@@ -7,7 +9,9 @@ import 'widgets/custom_app_bar.dart';
 import 'widgets/custom_buttom_nav_bar.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    ChangeNotifierProvider(create: (_) => ProfileProvider(), child: MyApp()),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -31,12 +35,14 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
 
   @override
   State<MainScreen> createState() => _MainScreenState();
 }
+
 class _MainScreenState extends State<MainScreen> {
   int _currentIndex = 0;
 
@@ -44,7 +50,7 @@ class _MainScreenState extends State<MainScreen> {
     setState(() => _currentIndex = index);
   }
 
-  final List<Widget> _screens = [ProfileScreen(), ContactScreen()];
+  List<Widget> get _screens => [ProfileScreen(), ContactScreen()];
 
   final List<String> _titles = ['Portfolio Kunto', 'Contact'];
 
