@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:my_portfolio_app/providers/portfolio_provider.dart';
 import 'package:my_portfolio_app/providers/profile_provider.dart';
 import 'package:provider/provider.dart';
 import 'screens/portfolio_screen.dart';
@@ -10,7 +11,13 @@ import 'widgets/custom_buttom_nav_bar.dart';
 
 void main() {
   runApp(
-    ChangeNotifierProvider(create: (_) => ProfileProvider(), child: MyApp()),
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => ProfileProvider()),
+        ChangeNotifierProvider(create: (_) => PortfolioProvider()),
+      ],
+      child: MyApp(),
+    ),
   );
 }
 
