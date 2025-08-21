@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:my_portfolio_app/providers/profile_provider.dart';
-import 'package:my_portfolio_app/screens/edit_profile_screen.dart';
+import 'package:my_portfolio_app/screens/profile_edit_screen.dart';
 import 'package:provider/provider.dart';
 
 const String pageTitle = "About Me";
