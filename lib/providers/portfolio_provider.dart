@@ -6,34 +6,52 @@ import 'dart:io';
 class PortfolioProvider with ChangeNotifier {
   final formKey = GlobalKey<FormState>();
   final picker = ImagePicker();
+  final List<Portfolio> _portfolios = [];
 
   final titleController = TextEditingController();
   final descriptionController = TextEditingController();
-  final categoryController = TextEditingController();
+  final stackController = TextEditingController();
   final linkController = TextEditingController();
 
+  String? category;
   List<String> stack = [];
   File? image;
   DateTime? completionDate;
 
+  List<Portfolio> get portfolios => _portfolios;
+
   Portfolio get portfolio => Portfolio(
     title: titleController.text,
     description: descriptionController.text,
-    category: categoryController.text,
+    category: category!,
     stack: stack,
     image: image!,
     completionDate: completionDate,
     link: linkController.text.isEmpty ? null : linkController.text,
   );
 
-  void setStack(List<String> newStack) {
-    stack = newStack;
+  void setStack(String value) {
+    if (value.isNotEmpty && !stack.contains(value)) {
+      stack.add(value);
+      notifyListeners();
+    }
+  }
+
+  void removeStack(String value) {
+    stack.remove(value);
     notifyListeners();
   }
 
-  void setImage(File? image) {
-    if (image != null) {
-      portfolio.image = image;
+  void setCategory(String? value) {
+    if (value != null) {
+      category = value;
+    }
+    notifyListeners();
+  }
+
+  void setImage(File? value) {
+    if (value != null) {
+      image = value;
     }
     notifyListeners();
   }
@@ -53,7 +71,7 @@ class PortfolioProvider with ChangeNotifier {
   Future<void> pickDate(BuildContext context) async {
     final picked = await showDatePicker(
       context: context,
-      initialDate: portfolio.completionDate ?? DateTime.now(),
+      initialDate: completionDate ?? DateTime.now(),
       firstDate: DateTime(2000),
       lastDate: DateTime(2100),
     );
@@ -66,10 +84,15 @@ class PortfolioProvider with ChangeNotifier {
     return formKey.currentState!.validate();
   }
 
-  void reset() {
+  void addPortfolio() {
+    _portfolios.add(portfolio);
+    notifyListeners();
+  }
+
+  void resetForm() {
     titleController.clear();
     descriptionController.clear();
-    categoryController.clear();
+    stackController.clear();
     linkController.clear();
     stack = [];
     image = null;
@@ -81,7 +104,7 @@ class PortfolioProvider with ChangeNotifier {
   void dispose() {
     titleController.dispose();
     descriptionController.dispose();
-    categoryController.dispose();
+    stackController.dispose();
     linkController.dispose();
     super.dispose();
   }
