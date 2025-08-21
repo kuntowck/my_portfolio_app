@@ -200,8 +200,8 @@ class PortfolioFormScreen extends StatelessWidget {
                                       ),
                                     ),
                                   );
-
                                   portfolioProvider.resetForm();
+                                  Navigator.pop(context);
                                   Navigator.pop(context);
                                 }
                               },
