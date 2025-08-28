@@ -6,6 +6,7 @@ import 'dart:io';
 class PortfolioProvider with ChangeNotifier {
   final formKey = GlobalKey<FormState>();
   final picker = ImagePicker();
+  final List<String> _categories = ["Web App", "Mobile App", "UI Design"];
   final List<Portfolio> _portfolios = [];
 
   final titleController = TextEditingController();
@@ -18,6 +19,7 @@ class PortfolioProvider with ChangeNotifier {
   File? image;
   DateTime? completionDate;
 
+  List<String> get categories => _categories;
   List<Portfolio> get portfolios => _portfolios;
 
   Portfolio get portfolio => Portfolio(
@@ -26,7 +28,7 @@ class PortfolioProvider with ChangeNotifier {
     category: category!,
     stack: stack,
     image: image!,
-    completionDate: completionDate,
+    completionDate: completionDate!,
     link: linkController.text.isEmpty ? null : linkController.text,
   );
 
