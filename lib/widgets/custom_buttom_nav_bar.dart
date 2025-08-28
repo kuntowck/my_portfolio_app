@@ -15,14 +15,14 @@ class CustomBottomNavBar extends StatelessWidget {
     return BottomNavigationBar(
       currentIndex: currentIndex,
       onTap: onTap,
-      selectedItemColor: Colors.white,
-      unselectedItemColor: Colors.deepPurple.shade100,
-      backgroundColor: Color(0xFF7B5FFF),
+      selectedItemColor: Color(0xFF7B5FFF),
+      unselectedItemColor: Colors.white,
+      // backgroundColor: Color(0xFF7B5FFF),
       items: const [
         BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
         BottomNavigationBarItem(
-          icon: Icon(Icons.contact_mail),
-          label: 'Contact',
+          icon: Icon(Icons.folder_copy),
+          label: 'Portfolio',
         ),
       ],
     );

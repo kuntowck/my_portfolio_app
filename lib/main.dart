@@ -2,11 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:my_portfolio_app/providers/portfolio_provider.dart';
 import 'package:my_portfolio_app/providers/profile_provider.dart';
+import 'package:my_portfolio_app/routes.dart';
 import 'package:provider/provider.dart';
 import 'screens/portfolio_screen.dart';
-import 'screens/contact_screen.dart';
 import 'screens/profile_screen.dart';
-import 'widgets/custom_app_bar.dart';
 import 'widgets/custom_buttom_nav_bar.dart';
 
 void main() {
@@ -30,6 +29,9 @@ class MyApp extends StatelessWidget {
       title: 'Personal Portfolio',
       darkTheme: ThemeData(
         brightness: Brightness.dark,
+        // colorScheme: ColorScheme.fromSeed(
+        //   seedColor: Colors.indigo,
+        // ),
         primarySwatch: Colors.indigo,
         useMaterial3: true,
         textTheme: GoogleFonts.interTextTheme().apply(
@@ -38,7 +40,8 @@ class MyApp extends StatelessWidget {
         ),
       ),
       themeMode: ThemeMode.dark,
-      home: const MainScreen(),
+      home: MainScreen(),
+      onGenerateRoute: AppRoutes.generateRoute,
     );
   }
 }
@@ -57,29 +60,44 @@ class _MainScreenState extends State<MainScreen> {
     setState(() => _currentIndex = index);
   }
 
-  List<Widget> get _screens => [ProfileScreen(), ContactScreen()];
+  List<Widget> get _screens => [ProfileScreen(), PortfolioScreen()];
 
-  final List<String> _titles = ['Portfolio Kunto', 'Contact'];
+  // final List<String> _titles = ['Profile', 'Portfolio'];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(title: _titles[_currentIndex]),
       body: _screens[_currentIndex],
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => PortfolioScreen()),
-          );
-        },
-        tooltip: 'Projects',
-        child: Icon(Icons.folder_copy),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: CustomBottomNavBar(
         currentIndex: _currentIndex,
         onTap: _changeTab,
+      ),
+            drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            DrawerHeader(
+              child: Text(
+                'Menu',
+                // style: TextStyle(color: Colors.white, fontSize: 20),
+              ),
+            ),
+            ListTile(
+              leading: Icon(Icons.phone),
+              title: Text('Contact'),
+              onTap: () {
+                Navigator.pushNamed(context, AppRoutes.contact);
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.person),
+              title: Text('Settings'),
+              onTap: () {
+                Navigator.pushNamed(context, AppRoutes.setting);
+              },
+            ),
+          ],
+        ),
       ),
     );
   }
