@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:my_portfolio_app/providers/profile_provider.dart';
+import 'package:my_portfolio_app/widgets/custom_app_bar.dart';
 import 'package:provider/provider.dart';
 
 class EditProfileScreen extends StatelessWidget {
@@ -7,46 +8,68 @@ class EditProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final InputDecoration fieldDecoration = InputDecoration(
+      filled: true,
+      fillColor: Colors.black,
+      contentPadding: const EdgeInsets.symmetric(vertical: 4, horizontal: 12),
+      border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+      enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(8),
+        borderSide: BorderSide(
+          color: Theme.of(context).colorScheme.primary,
+          width: 1,
+        ),
+      ),
+    );
+
     final profileProvider = context.read<ProfileProvider>();
 
-    // final TextEditingController nameController = TextEditingController(
-    //   text: profileProvider.name,
-    // );
-    // final TextEditingController professionController = TextEditingController(
-    //   text: profileProvider.profession,
-    // );
-    // final TextEditingController bioController = TextEditingController(
-    //   text: profileProvider.bio,
-    // );
-
     return Scaffold(
-      appBar: AppBar(title: const Text('Edit Profile')),
+      appBar: CustomAppBar(title: 'Edit Profile'),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
             TextField(
               controller: profileProvider.nameController,
-              decoration: const InputDecoration(labelText: 'Edit Name'),
+              decoration: fieldDecoration.copyWith(labelText: 'Edit Name'),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 16),
             TextField(
               controller: profileProvider.professionController,
-              decoration: const InputDecoration(labelText: 'Edit Profession'),
+              decoration: fieldDecoration.copyWith(
+                labelText: 'Edit Profession',
+              ),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 16),
             TextField(
               controller: profileProvider.bioController,
-              decoration: const InputDecoration(labelText: 'Edit Bio'),
+              decoration: fieldDecoration.copyWith(labelText: 'Edit Bio'),
+              maxLines: 3,
             ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                profileProvider.updateProfile();
+            const SizedBox(height: 16),
+            Row(
+              children: [
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () {
+                      profileProvider.updateProfile();
 
-                Navigator.pop(context, true);
-              },
-              child: const Text('Update Profile'),
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text("Profile updated successfully!"),
+                          backgroundColor: Colors.deepPurple.shade100,
+                          duration: Duration(seconds: 2),
+                        ),
+                      );
+
+                      Navigator.pop(context, true);
+                    },
+                    child: const Text('Update Profile'),
+                  ),
+                ),
+              ],
             ),
           ],
         ),

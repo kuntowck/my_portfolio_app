@@ -5,6 +5,22 @@ class ContactScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(child: Text('Contact Screen'));
+    return Scaffold(
+      appBar: AppBar(title: Text('Contact')),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text('Contact Screen'),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text('Back'),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
