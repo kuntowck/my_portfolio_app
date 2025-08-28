@@ -56,6 +56,33 @@ class ProfileScreen extends StatelessWidget {
           ),
         ),
       ),
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            DrawerHeader(
+              child: Text(
+                'Menu',
+                // style: TextStyle(color: Colors.white, fontSize: 20),
+              ),
+            ),
+            ListTile(
+              leading: Icon(Icons.phone),
+              title: Text('Contact'),
+              onTap: () {
+                Navigator.pushNamed(context, AppRoutes.contact);
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.person),
+              title: Text('Settings'),
+              onTap: () {
+                Navigator.pushNamed(context, AppRoutes.setting);
+              },
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

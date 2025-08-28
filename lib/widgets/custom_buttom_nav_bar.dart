@@ -15,8 +15,8 @@ class CustomBottomNavBar extends StatelessWidget {
     return BottomNavigationBar(
       currentIndex: currentIndex,
       onTap: onTap,
-      selectedItemColor: Color(0xFF7B5FFF),
-      unselectedItemColor: Colors.white,
+      selectedItemColor: Theme.of(context).colorScheme.primary,
+      // unselectedItemColor: Colors.white,
       // backgroundColor: Color(0xFF7B5FFF),
       items: const [
         BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),

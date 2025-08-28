@@ -32,7 +32,7 @@ class MyApp extends StatelessWidget {
         // colorScheme: ColorScheme.fromSeed(
         //   seedColor: Colors.indigo,
         // ),
-        primarySwatch: Colors.indigo,
+        // primarySwatch: Colors.indigo,
         useMaterial3: true,
         textTheme: GoogleFonts.interTextTheme().apply(
           bodyColor: Colors.white,
@@ -62,7 +62,7 @@ class _MainScreenState extends State<MainScreen> {
 
   List<Widget> get _screens => [ProfileScreen(), PortfolioScreen()];
 
-  // final List<String> _titles = ['Profile', 'Portfolio'];
+  // final List<String> _titles = ['Profile', 'Projects'];
 
   @override
   Widget build(BuildContext context) {
@@ -71,33 +71,6 @@ class _MainScreenState extends State<MainScreen> {
       bottomNavigationBar: CustomBottomNavBar(
         currentIndex: _currentIndex,
         onTap: _changeTab,
-      ),
-            drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: [
-            DrawerHeader(
-              child: Text(
-                'Menu',
-                // style: TextStyle(color: Colors.white, fontSize: 20),
-              ),
-            ),
-            ListTile(
-              leading: Icon(Icons.phone),
-              title: Text('Contact'),
-              onTap: () {
-                Navigator.pushNamed(context, AppRoutes.contact);
-              },
-            ),
-            ListTile(
-              leading: Icon(Icons.person),
-              title: Text('Settings'),
-              onTap: () {
-                Navigator.pushNamed(context, AppRoutes.setting);
-              },
-            ),
-          ],
-        ),
       ),
     );
   }
