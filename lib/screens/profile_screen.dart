@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:my_portfolio_app/providers/profile_provider.dart';
-import 'package:my_portfolio_app/screens/profile_edit_screen.dart';
+import 'package:my_portfolio_app/routes.dart';
+import 'package:my_portfolio_app/widgets/custom_app_bar.dart';
 import 'package:provider/provider.dart';
 
 const String pageTitle = "About Me";
@@ -23,32 +24,35 @@ class ProfileScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final profileProvider = context.watch<ProfileProvider>().profiles;
 
-    return SafeArea(
-      child: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            children: [
-              // Header Section
-              buildHeader(),
-              const SizedBox(height: 20),
+    return Scaffold(
+      appBar: CustomAppBar(title: 'Profile'),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              children: [
+                // Header Section
+                buildHeader(),
+                const SizedBox(height: 20),
 
-              // Profile Section
-              buildProfile(context, profileProvider),
-              const SizedBox(height: 20),
-              const Divider(),
-              const SizedBox(height: 20),
+                // Profile Section
+                buildProfile(context, profileProvider),
+                const SizedBox(height: 20),
+                const Divider(),
+                const SizedBox(height: 20),
 
-              // Contact Section
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  buildContact(Icons.email, email),
-                  buildContact(Icons.phone, phone),
-                  buildContact(Icons.location_on, address),
-                ],
-              ),
-            ],
+                // Contact Section
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    buildContact(Icons.email, email),
+                    buildContact(Icons.phone, phone),
+                    buildContact(Icons.location_on, address),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -121,23 +125,15 @@ Widget buildContact(icon, text) {
 
 Widget buttonEdit(context) {
   return IconButton(
-    icon: Icon(Icons.edit, color: Colors.indigo),
-    onPressed: () async {
-      final result = await Navigator.push(
-        context,
-        MaterialPageRoute(builder: (_) => EditProfileScreen()),
-      );
+    icon: Icon(Icons.edit, color: Color(0xFF7B5FFF)),
+    onPressed: () {
+      // Navigator.push(
+      //   context,
+      //   MaterialPageRoute(builder: (_) => EditProfileScreen()),
+      // );
 
-      if (result == true) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text("Profile updated successfully!"),
-            backgroundColor: Colors.deepPurple.shade100,
-            duration: Duration(seconds: 2),
-          ),
-        );
-      }
-    }, // Tidak ada fungsi
+      Navigator.pushNamed(context, AppRoutes.editProfile);
+    },
     tooltip: 'Edit',
   );
 }
