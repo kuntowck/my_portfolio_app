@@ -149,9 +149,10 @@ Widget _contentInputField(
       Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          ElevatedButton(
+          ElevatedButton.icon(
             onPressed: portfolioProvider.pickImage,
-            child: Text("Pick Image"),
+            icon: const Icon(Icons.image, size: 18),
+            label: const Text('Pick Image'),
           ),
           Expanded(
             child: Align(
@@ -253,9 +254,6 @@ Widget _contentInputField(
               decoration: BoxDecoration(
                 color: Colors.black,
                 borderRadius: BorderRadius.circular(8),
-                // border: Border.all(
-                //   color: Theme.of(context).colorScheme.primary,
-                // ),
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -267,17 +265,13 @@ Widget _contentInputField(
                           : DateFormat('dd/MM/yyyy').format(
                               portfolioProvider.completionDate!.toLocal(),
                             ),
-                      style: TextStyle(
-                        // color: Theme.of(context).colorScheme.primary,
-                        fontSize: 14,
-                      ),
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
                   Icon(
                     Icons.event,
                     size: 20,
-                    color: Theme.of(context).colorScheme.primary,
+                    // color: Theme.of(context).colorScheme.primary,
                   ),
                 ],
               ),
