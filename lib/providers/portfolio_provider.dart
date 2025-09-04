@@ -78,9 +78,9 @@ class PortfolioProvider with ChangeNotifier {
 
       final newPortfolio = await _service.addPortfolio(portfolio);
 
-      await Future.delayed(Duration(seconds: 1));
-
       _portfolios.add(newPortfolio);
+
+      loadPortfolios();
     } catch (e) {
       _errorMessage = e.toString();
     } finally {
