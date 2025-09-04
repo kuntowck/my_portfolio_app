@@ -49,6 +49,20 @@ class PortfolioFormScreen extends StatelessWidget {
                                     ),
                                     ElevatedButton(
                                       onPressed: () {
+                                        if (portfolioProvider.image == null) {
+                                          ScaffoldMessenger.of(
+                                            context,
+                                          ).showSnackBar(
+                                            const SnackBar(
+                                              content: Text(
+                                                "Image is required",
+                                              ),
+                                            ),
+                                          );
+                                          Navigator.pop(context);
+                                          return;
+                                        }
+
                                         if (portfolioProvider.stack.isEmpty) {
                                           ScaffoldMessenger.of(
                                             context,
@@ -59,6 +73,7 @@ class PortfolioFormScreen extends StatelessWidget {
                                               ),
                                             ),
                                           );
+                                          Navigator.pop(context);
                                           return;
                                         }
 
@@ -73,23 +88,12 @@ class PortfolioFormScreen extends StatelessWidget {
                                               ),
                                             ),
                                           );
-                                          return;
-                                        }
-
-                                        if (portfolioProvider.image == null) {
-                                          ScaffoldMessenger.of(
-                                            context,
-                                          ).showSnackBar(
-                                            const SnackBar(
-                                              content: Text(
-                                                "Image is required",
-                                              ),
-                                            ),
-                                          );
+                                          Navigator.pop(context);
                                           return;
                                         }
 
                                         portfolioProvider.addPortfolio();
+
                                         ScaffoldMessenger.of(
                                           context,
                                         ).showSnackBar(
@@ -99,6 +103,7 @@ class PortfolioFormScreen extends StatelessWidget {
                                             ),
                                           ),
                                         );
+
                                         portfolioProvider.resetForm();
                                         Navigator.pop(context);
                                         Navigator.pop(context);

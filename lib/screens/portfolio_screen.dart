@@ -21,6 +21,7 @@ class _PortfolioScreenState extends State<PortfolioScreen>
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
+    Future.microtask(() => context.read<PortfolioProvider>().loadPortfolios());
   }
 
   @override
@@ -32,6 +33,7 @@ class _PortfolioScreenState extends State<PortfolioScreen>
   @override
   Widget build(BuildContext context) {
     final portfolioProvider = context.watch<PortfolioProvider>();
+    // print("portfolio screen error message: $portfolioProvider.errorMessage");
 
     return Scaffold(
       appBar: AppBar(
@@ -49,21 +51,24 @@ class _PortfolioScreenState extends State<PortfolioScreen>
               .toList(),
         ),
       ),
-      body: TabBarView(
-        controller: _tabController,
-        children: [
-          buildProjectList(portfolioProvider.portfolios, 'Web App'),
-          buildProjectList(portfolioProvider.portfolios, 'Mobile App'),
-          buildProjectList(portfolioProvider.portfolios, 'UI Design'),
-        ],
-      ),
+      body: portfolioProvider.isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : portfolioProvider.errorMessage != null
+          ? Center(child: Text(portfolioProvider.errorMessage!))
+          : TabBarView(
+              controller: _tabController,
+              children: portfolioProvider.categories
+                  .map(
+                    (category) => buildProjectList(portfolioProvider, category),
+                  )
+                  .toList(),
+            ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           // Navigator.push(
           //   context,
           //   MaterialPageRoute(builder: (context) => PortfolioFormScreen()),
           // );
-
           Navigator.pushNamed(context, AppRoutes.addPortfolio);
         },
         child: Icon(Icons.add),
@@ -72,8 +77,8 @@ class _PortfolioScreenState extends State<PortfolioScreen>
   }
 }
 
-Widget buildProjectList(List<Portfolio> portfolios, String category) {
-  final filteredCategory = portfolios
+Widget buildProjectList(PortfolioProvider provider, String category) {
+  final filteredCategory = provider.portfolios
       .where((p) => p.category == category)
       .toList();
 
@@ -95,12 +100,19 @@ Card _card(int index, Portfolio portfolio) {
     margin: EdgeInsets.only(bottom: 8.0),
     child: Column(
       children: [
-        Image.file(
-          portfolio.image,
-          height: 200,
-          width: double.infinity,
-          fit: BoxFit.cover,
-        ),
+        portfolio.imageUrl == ''
+            ? Image.asset(
+                'assets/img/noimage.png',
+                height: 200,
+                width: double.infinity,
+                fit: BoxFit.cover,
+              )
+            : Image.network(
+                "http://192.168.1.7:5144${portfolio.imageUrl}",
+                height: 200,
+                width: double.infinity,
+                fit: BoxFit.cover,
+              ),
         ListTile(
           leading: CircleAvatar(
             radius: 16,
@@ -117,7 +129,7 @@ Card _card(int index, Portfolio portfolio) {
                 portfolio.title,
                 style: const TextStyle(fontWeight: FontWeight.bold),
               ),
-              Text(DateFormat('MMM yyyy').format(portfolio.completionDate!)),
+              Text(DateFormat('MMM yyyy').format(portfolio.completionDate)),
             ],
           ),
           subtitle: Column(
@@ -132,7 +144,8 @@ Card _card(int index, Portfolio portfolio) {
                 }).toList(),
               ),
               const SizedBox(height: 4),
-              if (portfolio.link != null && portfolio.link!.isNotEmpty)
+              if (portfolio.projectLink != null &&
+                  portfolio.projectLink!.isNotEmpty)
                 TextButton(
                   onPressed: () => {},
                   child: const Text('View Project'),

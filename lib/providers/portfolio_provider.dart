@@ -2,35 +2,92 @@ import 'package:flutter/material.dart';
 import 'package:my_portfolio_app/models/portfolio_model.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
+import 'package:my_portfolio_app/services/portfolio_service.dart';
 
 class PortfolioProvider with ChangeNotifier {
   final formKey = GlobalKey<FormState>();
   final picker = ImagePicker();
-  final List<String> _categories = ["Web App", "Mobile App", "UI Design"];
-  final List<Portfolio> _portfolios = [];
+  final PortfolioService _service = PortfolioService();
+  final List<String> _categories = [
+    "Web Development",
+    "Mobile App",
+    "UI Design",
+  ];
 
   final titleController = TextEditingController();
   final descriptionController = TextEditingController();
   final stackController = TextEditingController();
   final linkController = TextEditingController();
 
+  List<Portfolio> _portfolios = [];
   String? category;
   List<String> stack = [];
   File? image;
   DateTime? completionDate;
+  String? _errorMessage;
+  bool _isLoading = false;
 
   List<String> get categories => _categories;
   List<Portfolio> get portfolios => _portfolios;
+  String? get errorMessage => _errorMessage;
+  bool get isLoading => _isLoading;
 
-  Portfolio get portfolio => Portfolio(
-    title: titleController.text,
-    description: descriptionController.text,
-    category: category!,
-    stack: stack,
-    image: image!,
-    completionDate: completionDate!,
-    link: linkController.text.isEmpty ? null : linkController.text,
-  );
+  Future<void> loadPortfolios() async {
+    _errorMessage = null;
+    _isLoading = true;
+    notifyListeners();
+
+    try {
+      _portfolios = await _service.fetchPortfolios();
+
+      await Future.delayed(Duration(seconds: 1));
+    } catch (e) {
+      _errorMessage = e.toString();
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> addPortfolio() async {
+    final title = titleController.text;
+    final description = descriptionController.text;
+    final selectedCategory = category!;
+    final selectedStack = stack;
+    final selectedCompletionDate = completionDate;
+    final projectLink = linkController.text.isEmpty
+        ? null
+        : linkController.text;
+
+    _errorMessage = null;
+    _isLoading = true;
+    notifyListeners();
+
+    try {
+      final imageUrl = await _service.uploadImage(image!);
+
+      final Portfolio portfolio = Portfolio(
+        title: title,
+        description: description,
+        category: selectedCategory,
+        stack: selectedStack,
+        imageUrl: imageUrl,
+        completionDate: selectedCompletionDate!,
+        projectLink: projectLink,
+      );
+
+      final newPortfolio = await _service.addPortfolio(portfolio);
+
+      await Future.delayed(Duration(seconds: 1));
+
+      _portfolios.add(newPortfolio);
+    } catch (e) {
+      _errorMessage = e.toString();
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
 
   void setStack(String value) {
     if (value.isNotEmpty && !stack.contains(value)) {
@@ -60,6 +117,7 @@ class PortfolioProvider with ChangeNotifier {
 
   Future<void> pickImage() async {
     final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+
     if (pickedFile != null) {
       setImage(File(pickedFile.path));
     }
@@ -84,11 +142,6 @@ class PortfolioProvider with ChangeNotifier {
 
   bool validateForm() {
     return formKey.currentState!.validate();
-  }
-
-  void addPortfolio() {
-    _portfolios.add(portfolio);
-    notifyListeners();
   }
 
   void resetForm() {
