@@ -1,86 +1,106 @@
 import 'package:flutter/material.dart';
+import 'package:my_portfolio_app/providers/auth_provider.dart';
 import 'package:my_portfolio_app/providers/profile_provider.dart';
 import 'package:my_portfolio_app/routes.dart';
 import 'package:my_portfolio_app/widgets/custom_app_bar.dart';
 import 'package:provider/provider.dart';
-
-const String pageTitle = "About Me";
 
 // const String name = "Kunto Wicaksono";
 // const String profession = "Software Engineer";
 // const String bio =
 //     'Halo! You can call me Kunto. I am a passionate software engineer with experience '
 //     'building mobile and web apps. I love clean code, coffee, and football.';
-const String profileImage = "assets/img/profile.jpg";
-
-const String email = "kunto@solecode.id";
-const String phone = "+62 812-3456-7890";
-const String address = "Jakarta, Indonesia";
+// const String email = "kunto@solecode.id";
+// const String phone = "+62 812-3456-7890";
+// const String address = "Jakarta, Indonesia";
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final profileProvider = context.watch<ProfileProvider>().profiles;
+    final authProvider = Provider.of<AuthProvider>(context);
+    final profileProvider = Provider.of<ProfileProvider>(context);
+    final profile = profileProvider.profile!;
 
     return Scaffold(
       appBar: CustomAppBar(title: 'Profile'),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              children: [
-                // Header Section
-                buildHeader(),
-                const SizedBox(height: 20),
+      body: profileProvider.isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : profileProvider.profile == null
+          ? Center(child: Text("No profile data found."))
+          : Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                children: [
+                  // Profile Section
+                  buildProfile(context, profile),
+                  const SizedBox(height: 20),
+                  const Divider(),
+                  const SizedBox(height: 20),
 
-                // Profile Section
-                buildProfile(context, profileProvider),
-                const SizedBox(height: 20),
-                const Divider(),
-                const SizedBox(height: 20),
-
-                // Contact Section
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    buildContact(Icons.email, email),
-                    buildContact(Icons.phone, phone),
-                    buildContact(Icons.location_on, address),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-      drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: [
-            DrawerHeader(
-              child: Text(
-                'Menu',
-                // style: TextStyle(color: Colors.white, fontSize: 20),
+                  // Contact Section
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      buildContact(Icons.email, profile.email),
+                      buildContact(Icons.phone, profile.phone),
+                      buildContact(Icons.location_on, profile.address),
+                    ],
+                  ),
+                ],
               ),
             ),
-            ListTile(
-              leading: Icon(Icons.phone),
-              title: Text('Contact'),
-              onTap: () {
-                Navigator.pushNamed(context, AppRoutes.contact);
-              },
-            ),
-            ListTile(
-              leading: Icon(Icons.person),
-              title: Text('Settings'),
-              onTap: () {
-                Navigator.pushNamed(context, AppRoutes.setting);
-              },
-            ),
-          ],
+      drawer: Drawer(
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              DrawerHeader(
+                child: Text(
+                  'Menu',
+                  // style: TextStyle(color: Colors.white, fontSize: 20),
+                ),
+              ),
+              Expanded(
+                child: ListView(
+                  padding: EdgeInsets.all(16),
+                  children: [
+                    ListTile(
+                      leading: Icon(Icons.phone),
+                      title: Text('Contact'),
+                      onTap: () {
+                        Navigator.pushNamed(context, AppRoutes.contact);
+                      },
+                    ),
+                    ListTile(
+                      leading: Icon(Icons.person),
+                      title: Text('Settings'),
+                      onTap: () {
+                        Navigator.pushNamed(context, AppRoutes.setting);
+                      },
+                    ),
+                  ],
+                ),
+              ),
+              ElevatedButton.icon(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Theme.of(context).colorScheme.error,
+                  foregroundColor: Theme.of(context).colorScheme.onError,
+                ),
+                label: Text('Sign Out'),
+                icon: Icon(Icons.logout),
+                onPressed: () async {
+                  await authProvider.signOut();
+          
+                  if (context.mounted) {
+                    Navigator.pushReplacementNamed(context, AppRoutes.login);
+                  }
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -92,24 +112,31 @@ Widget buildHeader() {
     mainAxisSize: MainAxisSize.min,
     children: [
       Text(
-        pageTitle,
+        'About Me',
         style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
       ),
     ],
   );
 }
 
-Widget buildProfile(context, profileProvider) {
+Widget buildProfile(context, profile) {
   return Column(
     children: [
       // Image
       ClipOval(
-        child: Image.asset(
-          profileImage,
-          width: 200,
-          height: 200,
-          fit: BoxFit.cover,
-        ),
+        child: (profile!.photo!.isNotEmpty)
+            ? Image.network(
+                profile!.photo!,
+                width: 150,
+                height: 150,
+                fit: BoxFit.cover,
+              )
+            : Image.asset(
+                "assets/img/logo-noimage.png",
+                width: 150,
+                height: 150,
+                fit: BoxFit.cover,
+              ),
       ),
       const SizedBox(height: 20),
       const Divider(),
@@ -122,15 +149,15 @@ Widget buildProfile(context, profileProvider) {
           Row(
             children: [
               Text(
-                profileProvider.name,
+                profile.name ?? '',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               buttonEdit(context),
             ],
           ),
-          Text(profileProvider.profession),
+          Text(profile.profession ?? ''),
           const SizedBox(height: 8),
-          Text(profileProvider.bio),
+          Text(profile.bio ?? ''),
         ],
       ),
     ],
@@ -144,7 +171,7 @@ Widget buildContact(icon, text) {
       children: [
         Icon(icon, size: 20, color: Color(0xFF7B5FFF)),
         const SizedBox(width: 8),
-        Text(text),
+        Text(text ?? ''),
       ],
     ),
   );
