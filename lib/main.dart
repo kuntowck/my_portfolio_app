@@ -1,19 +1,40 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:my_portfolio_app/providers/auth_provider.dart';
 import 'package:my_portfolio_app/providers/portfolio_provider.dart';
 import 'package:my_portfolio_app/providers/profile_provider.dart';
 import 'package:my_portfolio_app/routes.dart';
 import 'package:provider/provider.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'screens/portfolio_screen.dart';
 import 'screens/profile_screen.dart';
 import 'widgets/custom_buttom_nav_bar.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await Firebase.initializeApp(
+    options: FirebaseOptions(
+      projectId: 'flutter-app-d09a5', // Project ID
+      messagingSenderId: '439569327558', //Project Number
+      apiKey: 'AIzaSyBIBM-SoWXnwiKRHcRLG8gGMy1L919wqYs', //Web API Key
+      appId: '1:439569327558:android:e2fdb9b5a285c45605fec7',
+    ), // App ID
+  );
+
+  await Supabase.initialize(
+    url: "https://uylolxiduxanmjqcmjgj.supabase.co",
+    anonKey:
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV5bG9seGlkdXhhbm1qcWNtamdqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc1NzA0MjcsImV4cCI6MjA3MzE0NjQyN30.YH4BKLxxLi7qVcgPgsItcJ0pVfjEoHK1XNOoGXaid6c",
+  );
+
   runApp(
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => ProfileProvider()),
         ChangeNotifierProvider(create: (_) => PortfolioProvider()),
+        ChangeNotifierProvider(create: (_) => AuthProvider()),
       ],
       child: MyApp(),
     ),
@@ -40,7 +61,8 @@ class MyApp extends StatelessWidget {
         ),
       ),
       themeMode: ThemeMode.dark,
-      home: MainScreen(),
+      // home: MainScreen(),
+      initialRoute: AppRoutes.login,
       onGenerateRoute: AppRoutes.generateRoute,
     );
   }
@@ -67,7 +89,7 @@ class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _screens[_currentIndex],
+      body: SafeArea(child: _screens[_currentIndex]),
       bottomNavigationBar: CustomBottomNavBar(
         currentIndex: _currentIndex,
         onTap: _changeTab,
