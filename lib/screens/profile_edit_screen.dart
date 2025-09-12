@@ -155,7 +155,7 @@ Widget _headerProfileImage(
   return Stack(
     children: [
       ClipOval(
-        child: (profileProvider.profile!.photo!.isNotEmpty)
+        child: (profileProvider.profile!.photo != null && profileProvider.profile!.photo!.isNotEmpty)
             ? Image.network(
                 profileProvider.profile!.photo!,
                 width: 150,

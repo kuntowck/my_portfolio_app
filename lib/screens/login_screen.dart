@@ -50,10 +50,17 @@ class _LoginScreenState extends State<LoginScreen> {
           child: Form(
             key: _formKey,
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Image.asset("assets/img/logo.png", height: 100),
-                const SizedBox(height: 20),
+                Text(
+                  'Welcome aboard 👋🏼',
+                  style: theme.textTheme.headlineLarge?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text('Dive into my projects!'),
+                const SizedBox(height: 24),
 
                 // EMAIL INPUT
                 TextFormField(
@@ -120,37 +127,51 @@ class _LoginScreenState extends State<LoginScreen> {
                       padding: const EdgeInsets.symmetric(vertical: 12),
                     ),
                     onPressed: () async {
-                      setState(() => _isLoading = true);
+                      if (_formKey.currentState!.validate()) {
+                        setState(() => _isLoading = true);
 
-                      try {
-                        final email = _emailController.text.trim();
-                        final password = _passwordController.text.trim();
+                        try {
+                          final email = _emailController.text.trim();
+                          final password = _passwordController.text.trim();
 
-                        final success = await authProvider.signInWithEmail(
-                          email,
-                          password,
-                          profileProvider,
-                        );
+                          final success = await authProvider.signInWithEmail(
+                            email,
+                            password,
+                            profileProvider,
+                          );
 
-                        if (!mounted) return;
+                          if (!mounted) return;
 
-                        if (success && profileProvider.profile != null) {
-                          if (profileProvider.profile!.role == "admin") {
-                            Navigator.pushReplacementNamed(
-                              context,
-                              AppRoutes.adminDashboard,
-                            );
+                          if (success && profileProvider.profile != null) {
+                            if (profileProvider.profile!.role == "admin") {
+                              Navigator.pushReplacementNamed(
+                                context,
+                                AppRoutes.adminDashboard,
+                              );
+                            } else {
+                              Navigator.pushReplacementNamed(
+                                context,
+                                AppRoutes.home,
+                              );
+                            }
                           } else {
-                            Navigator.pushReplacementNamed(
-                              context,
-                              AppRoutes.home,
+                            messenger.showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  authProvider.errorMessage ?? "Login failed",
+                                  style: TextStyle(
+                                    color: theme.colorScheme.onError,
+                                  ),
+                                ),
+                                backgroundColor: theme.colorScheme.error,
+                              ),
                             );
                           }
-                        } else {
+                        } catch (e) {
                           messenger.showSnackBar(
                             SnackBar(
                               content: Text(
-                                authProvider.errorMessage ?? "Login failed",
+                                "Sign in failed: $e",
                                 style: TextStyle(
                                   color: theme.colorScheme.onError,
                                 ),
@@ -158,21 +179,9 @@ class _LoginScreenState extends State<LoginScreen> {
                               backgroundColor: theme.colorScheme.error,
                             ),
                           );
+                        } finally {
+                          setState(() => _isLoading = false);
                         }
-                      } catch (e) {
-                        messenger.showSnackBar(
-                          SnackBar(
-                            content: Text(
-                              "Sign in failed: $e",
-                              style: TextStyle(
-                                color: theme.colorScheme.onError,
-                              ),
-                            ),
-                            backgroundColor: theme.colorScheme.error,
-                          ),
-                        );
-                      } finally {
-                        setState(() => _isLoading = false);
                       }
                     },
                     child: _isLoading

@@ -52,39 +52,39 @@ class ProfileScreen extends StatelessWidget {
               ),
             ),
       drawer: Drawer(
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              DrawerHeader(
-                child: Text(
-                  'Menu',
-                  // style: TextStyle(color: Colors.white, fontSize: 20),
-                ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            DrawerHeader(
+              child: Text(
+                'Menu',
+                // style: TextStyle(color: Colors.white, fontSize: 20),
               ),
-              Expanded(
-                child: ListView(
-                  padding: EdgeInsets.all(16),
-                  children: [
-                    ListTile(
-                      leading: Icon(Icons.phone),
-                      title: Text('Contact'),
-                      onTap: () {
-                        Navigator.pushNamed(context, AppRoutes.contact);
-                      },
-                    ),
-                    ListTile(
-                      leading: Icon(Icons.person),
-                      title: Text('Settings'),
-                      onTap: () {
-                        Navigator.pushNamed(context, AppRoutes.setting);
-                      },
-                    ),
-                  ],
-                ),
+            ),
+            Expanded(
+              child: ListView(
+                padding: EdgeInsets.all(16),
+                children: [
+                  ListTile(
+                    leading: Icon(Icons.phone),
+                    title: Text('Contact'),
+                    onTap: () {
+                      Navigator.pushNamed(context, AppRoutes.contact);
+                    },
+                  ),
+                  ListTile(
+                    leading: Icon(Icons.person),
+                    title: Text('Settings'),
+                    onTap: () {
+                      Navigator.pushNamed(context, AppRoutes.setting);
+                    },
+                  ),
+                ],
               ),
-              ElevatedButton.icon(
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: ElevatedButton.icon(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Theme.of(context).colorScheme.error,
                   foregroundColor: Theme.of(context).colorScheme.onError,
@@ -93,14 +93,14 @@ class ProfileScreen extends StatelessWidget {
                 icon: Icon(Icons.logout),
                 onPressed: () async {
                   await authProvider.signOut();
-          
+                      
                   if (context.mounted) {
                     Navigator.pushReplacementNamed(context, AppRoutes.login);
                   }
                 },
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
@@ -124,7 +124,7 @@ Widget buildProfile(context, profile) {
     children: [
       // Image
       ClipOval(
-        child: (profile!.photo!.isNotEmpty)
+        child: (profile.photo != null && profile!.photo!.isNotEmpty)
             ? Image.network(
                 profile!.photo!,
                 width: 150,

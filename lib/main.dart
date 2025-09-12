@@ -1,6 +1,8 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:my_portfolio_app/config/env.dart';
 import 'package:my_portfolio_app/providers/auth_provider.dart';
 import 'package:my_portfolio_app/providers/portfolio_provider.dart';
 import 'package:my_portfolio_app/providers/profile_provider.dart';
@@ -14,20 +16,21 @@ import 'widgets/custom_buttom_nav_bar.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  // Load env
+  await dotenv.load(fileName: ".env");
+
+  // Firebase init
   await Firebase.initializeApp(
     options: FirebaseOptions(
-      projectId: 'flutter-app-d09a5', // Project ID
-      messagingSenderId: '439569327558', //Project Number
-      apiKey: 'AIzaSyBIBM-SoWXnwiKRHcRLG8gGMy1L919wqYs', //Web API Key
-      appId: '1:439569327558:android:e2fdb9b5a285c45605fec7',
-    ), // App ID
+      projectId: Env.firebaseProjectId,
+      messagingSenderId: Env.firebaseSenderId,
+      apiKey: Env.firebaseApiKey,
+      appId: Env.firebaseAppId,
+    ),
   );
 
-  await Supabase.initialize(
-    url: "https://uylolxiduxanmjqcmjgj.supabase.co",
-    anonKey:
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV5bG9seGlkdXhhbm1qcWNtamdqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc1NzA0MjcsImV4cCI6MjA3MzE0NjQyN30.YH4BKLxxLi7qVcgPgsItcJ0pVfjEoHK1XNOoGXaid6c",
-  );
+  // Supabase init
+  await Supabase.initialize(url: Env.supabaseUrl, anonKey: Env.supabaseAnonKey);
 
   runApp(
     MultiProvider(

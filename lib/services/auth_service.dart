@@ -18,9 +18,11 @@ class AuthService {
 
       final user = credential.user;
 
-      if (user == null) {
+      final profileExist = await _profileService.checkUserExists(user!.uid);
+
+      if (!profileExist) {
         final profile = Profile(
-          uid: user!.uid,
+          uid: user.uid,
           email: user.email!,
           name: user.email!.split('@')[0],
           role: 'member',
@@ -42,20 +44,6 @@ class AuthService {
         email: email,
         password: password,
       );
-
-      // buat profile default di Firestore
-      final user = credential.user;
-
-      if (user != null) {
-        final profile = Profile(
-          uid: user.uid,
-          name: user.email!.split('@')[0],
-          email: user.email!,
-          role: "member",
-        );
-
-        await _profileService.createUserProfile(profile);
-      }
 
       return credential.user;
     } on FirebaseAuthException catch (e) {
